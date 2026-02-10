@@ -724,19 +724,23 @@
     border-radius: 10px;
 }
 
-.progress-fill.strength-foundation {
+.progress-fill.strength-initial {
     background: linear-gradient(90deg, #c9190b 0%, #e01000 100%);
 }
 
-.progress-fill.strength-developing {
+.progress-fill.strength-managed {
     background: linear-gradient(90deg, #ec7a08 0%, #f4b678 100%);
 }
 
-.progress-fill.strength-strategic {
-    background: linear-gradient(90deg, #f0ab00 0%, #ffc425 100%);
+.progress-fill.strength-defined {
+    background: linear-gradient(90deg, #ffc107 0%, #ffd54f 100%);
 }
 
-.progress-fill.strength-advanced {
+.progress-fill.strength-quantitative {
+    background: linear-gradient(90deg, #8bc34a 0%, #aed581 100%);
+}
+
+.progress-fill.strength-optimizing {
     background: linear-gradient(90deg, #2aaa04 0%, #3fcc00 100%);
 }
 
@@ -747,22 +751,27 @@
     display: inline-block;
 }
 
-.strength-badge.strength-foundation {
+.strength-badge.strength-initial {
     background: #c9190b;
     color: #fff;
 }
 
-.strength-badge.strength-developing {
+.strength-badge.strength-managed {
     background: #ec7a08;
     color: #fff;
 }
 
-.strength-badge.strength-strategic {
-    background: #f0ab00;
+.strength-badge.strength-defined {
+    background: #ffc107;
     color: #000;
 }
 
-.strength-badge.strength-advanced {
+.strength-badge.strength-quantitative {
+    background: #8bc34a;
+    color: #000;
+}
+
+.strength-badge.strength-optimizing {
     background: #2aaa04;
     color: #fff;
 }

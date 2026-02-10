@@ -288,24 +288,28 @@
                 $percentage = ($score / $maxDomainScore) * 100;
                 $weight = $domainWeights[$domainName] ?? 1.0;
 
-                // Maturity levels based on score percentage (4-level system)
-                // Foundation: 0%, Developing: 1-33%, Strategic: 34-67%, Advanced: 68-100%
-                if ($percentage == 0) {
-                    $strengthClass = 'strength-foundation';
-                    $strengthIcon = 'fa-seedling';
-                    $strengthText = 'Foundation';
-                } elseif ($percentage <= 33) {
-                    $strengthClass = 'strength-developing';
-                    $strengthIcon = 'fa-arrow-trend-up';
-                    $strengthText = 'Developing';
-                } elseif ($percentage <= 67) {
-                    $strengthClass = 'strength-strategic';
+                // Maturity levels based on score percentage (CMMI 5-level system)
+                // Initial: 0-20%, Managed: 21-40%, Defined: 41-60%, Quantitatively Managed: 61-80%, Optimizing: 81-100%
+                if ($percentage <= 20) {
+                    $strengthClass = 'strength-initial';
+                    $strengthIcon = 'fa-circle-exclamation';
+                    $strengthText = 'Initial';
+                } elseif ($percentage <= 40) {
+                    $strengthClass = 'strength-managed';
+                    $strengthIcon = 'fa-clipboard-list';
+                    $strengthText = 'Managed';
+                } elseif ($percentage <= 60) {
+                    $strengthClass = 'strength-defined';
+                    $strengthIcon = 'fa-sitemap';
+                    $strengthText = 'Defined';
+                } elseif ($percentage <= 80) {
+                    $strengthClass = 'strength-quantitative';
                     $strengthIcon = 'fa-chart-line';
-                    $strengthText = 'Strategic';
+                    $strengthText = 'Quantitatively Managed';
                 } else {
-                    $strengthClass = 'strength-advanced';
-                    $strengthIcon = 'fa-shield-halved';
-                    $strengthText = 'Advanced';
+                    $strengthClass = 'strength-optimizing';
+                    $strengthIcon = 'fa-rocket';
+                    $strengthText = 'Optimizing';
                 }
             ?>
               <tr>
