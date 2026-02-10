@@ -97,8 +97,8 @@
 
     .landing-card-content {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
       margin-top: 1.5rem;
     }
 
@@ -333,6 +333,92 @@
       font-size: 0.9rem;
     }
 
+    /* Maturity Levels Display */
+    .maturity-levels-display {
+      padding: 1rem;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 4px;
+      height: 100%;
+    }
+
+    .maturity-levels-display h3 {
+      color: #9ec7fc;
+      font-size: 1rem;
+      margin: 0 0 0.75rem 0;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .maturity-level-item {
+      padding: 0.6rem 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 4px;
+      border-left: 4px solid;
+    }
+
+    .maturity-level-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .maturity-level-item.level-initial {
+      background: rgba(201, 25, 11, 0.15);
+      border-color: #c9190b;
+    }
+
+    .maturity-level-item.level-managed {
+      background: rgba(236, 122, 8, 0.15);
+      border-color: #ec7a08;
+    }
+
+    .maturity-level-item.level-defined {
+      background: rgba(255, 193, 7, 0.15);
+      border-color: #ffc107;
+    }
+
+    .maturity-level-item.level-quantitative {
+      background: rgba(139, 195, 74, 0.15);
+      border-color: #8bc34a;
+    }
+
+    .maturity-level-item.level-optimizing {
+      background: rgba(42, 170, 4, 0.15);
+      border-color: #2aaa04;
+    }
+
+    .maturity-level-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #9ec7fc;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .maturity-level-range {
+      font-size: 0.7rem;
+      color: #999;
+      font-weight: normal;
+    }
+
+    .maturity-level-desc {
+      font-size: 0.75rem;
+      color: #ccc;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 1400px) {
+      .landing-card-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      .maturity-levels-display {
+        grid-column: 1 / -1;
+      }
+    }
+
     @media (max-width: 1024px) {
       .landing-card-content {
         grid-template-columns: 1fr;
@@ -391,13 +477,10 @@
 
   <div class="landing-page-wrapper">
     <div class="container" style="max-width: 1400px; margin: 2rem auto; padding: 0 2rem;">
-      <div style="text-align: center; margin-bottom: 1.5rem;">
-        <h1 style="color: #9ec7fc; font-size: 2rem; margin-bottom: 0.5rem; font-weight: 600;">
+      <div style="text-align: center; margin-bottom: 0;">
+        <h1 style="color: #9ec7fc; font-size: 2rem; margin-bottom: 0; font-weight: 600;">
           Digital Sovereignty Navigator
         </h1>
-        <p style="color: #ccc; font-size: 1rem; max-width: 800px; margin: 0 auto;">
-          Discover what you know and where you stand to help unlock strategies which strengthen your digital independence
-        </p>
       </div>
 
       <div class="landing-cards-grid">
@@ -469,7 +552,7 @@
               </div>
             </div>
 
-            <!-- Right Column: Domain Weights Display -->
+            <!-- Middle Column: Domain Weights Display -->
             <div class="landing-card-right">
               <div class="weights-display">
                 <h3>
@@ -485,6 +568,60 @@
                       <span class="weight-value" id="weight-value-<?php echo htmlspecialchars(str_replace(' ', '-', $domain)); ?>">1.0×</span>
                     </div>
                   <?php endforeach; ?>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Maturity Levels -->
+            <div class="landing-card-right">
+              <div class="maturity-levels-display">
+                <h3>
+                  <i class="fa-solid fa-layer-group"></i> CMMI Maturity Levels
+                </h3>
+
+                <div class="maturity-level-item level-initial">
+                  <div class="maturity-level-name">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    Initial
+                    <span class="maturity-level-range">(0-20%)</span>
+                  </div>
+                  <div class="maturity-level-desc">Unpredictable, poorly controlled, reactive processes</div>
+                </div>
+
+                <div class="maturity-level-item level-managed">
+                  <div class="maturity-level-name">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    Managed
+                    <span class="maturity-level-range">(21-40%)</span>
+                  </div>
+                  <div class="maturity-level-desc">Projects planned and executed per policy, basic controls in place</div>
+                </div>
+
+                <div class="maturity-level-item level-defined">
+                  <div class="maturity-level-name">
+                    <i class="fa-solid fa-sitemap"></i>
+                    Defined
+                    <span class="maturity-level-range">(41-60%)</span>
+                  </div>
+                  <div class="maturity-level-desc">Standardized, documented, and proactive processes organization-wide</div>
+                </div>
+
+                <div class="maturity-level-item level-quantitative">
+                  <div class="maturity-level-name">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Quantitatively Managed
+                    <span class="maturity-level-range">(61-80%)</span>
+                  </div>
+                  <div class="maturity-level-desc">Measured and controlled using statistical techniques and data</div>
+                </div>
+
+                <div class="maturity-level-item level-optimizing">
+                  <div class="maturity-level-name">
+                    <i class="fa-solid fa-rocket"></i>
+                    Optimizing
+                    <span class="maturity-level-range">(81-100%)</span>
+                  </div>
+                  <div class="maturity-level-desc">Continuous improvement and innovation-focused processes</div>
                 </div>
               </div>
             </div>

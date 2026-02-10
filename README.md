@@ -55,7 +55,7 @@ Professional PDF report with weighted scores, domain breakdown, maturity level a
 - **Custom Weighting**: Adjustable domain weights (1.0× to 2.0×) for personalized assessments
 - **Weighted Scoring**: Intelligent scoring that prioritizes critical domains based on selected profile
 - **Instant Scoring**: Real-time maturity level calculation
-- **Maturity Levels**: Foundation, Developing, Strategic, Advanced
+- **Maturity Levels**: CMMI-aligned 5-level model (Initial, Managed, Defined, Quantitatively Managed, Optimizing)
 - **Actionable Recommendations**: Tailored guidance based on assessment results
 - **Research Questions**: Track "Don't Know" responses for follow-up investigation
 - **PDF Export**: Professional downloadable reports with profile information
@@ -341,23 +341,37 @@ The assessment uses a **weighted scoring algorithm** that considers both your an
 
 #### Maturity Levels
 
-Based on your **weighted score** (0-21 points):
+Based on your **weighted score** (0-21 points), aligned with the **CMMI (Capability Maturity Model Integration)** framework:
 
-- **Foundation (0-5.25 points)**: Early-stage maturity - Building foundational capabilities
-  - Significant opportunities to strengthen capabilities across multiple domains
-  - Focus on establishing basic controls and reducing external dependencies
+- **Initial (0-4.2 points / 0-20%)**: Ad-hoc and unpredictable
+  - Processes are unpredictable, poorly controlled, and reactive
+  - Success depends on individual heroics rather than proven processes
+  - Significant dependencies on external providers with minimal sovereignty controls
+  - Focus: Establish executive awareness and basic policies
 
-- **Developing (5.26-10.5 points)**: Growing maturity - Expanding capabilities
-  - Actively building digital sovereignty capabilities with visible progress
-  - Continue developing foundational controls and addressing gaps
+- **Managed (4.21-8.4 points / 21-40%)**: Project-level management
+  - Projects are planned and executed in accordance with policy
+  - Requirements are managed, but processes may not be repeatable organization-wide
+  - Basic controls are in place but not yet standardized
+  - Focus: Build repeatable practices and implement foundational controls
 
-- **Strategic (10.51-15.75 points)**: Mature posture - Comprehensive coverage
-  - Strong digital sovereignty capabilities across most domains
-  - Focus on closing remaining gaps and optimizing existing controls
+- **Defined (8.41-12.6 points / 41-60%)**: Standardized and proactive
+  - Processes are well characterized, understood, documented, and standardized
+  - Digital sovereignty practices are consistent and repeatable across the organization
+  - Clear governance structures and policies are in place
+  - Focus: Ensure organization-wide consistency and pursue certifications
 
-- **Advanced (15.76-21 points)**: Leading maturity - Exemplary readiness
-  - Comprehensive digital sovereignty capabilities across all domains
-  - Maintain excellence and stay ahead of evolving requirements
+- **Quantitatively Managed (12.61-16.8 points / 61-80%)**: Measured and controlled
+  - Processes are measured and controlled using quantitative data and statistical techniques
+  - Quantitative objectives established for quality and performance
+  - Process variations are understood and controlled
+  - Focus: Optimize through data-driven decisions and performance metrics
+
+- **Optimizing (16.81-21 points / 81-100%)**: Continuous improvement
+  - Focus on continuous improvement through quantitative feedback and innovation
+  - Proactive identification and deployment of innovative sovereignty practices
+  - Industry-leading posture with thought leadership contributions
+  - Focus: Drive innovation and lead industry best practices
 
 #### Results Components
 

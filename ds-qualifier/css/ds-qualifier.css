@@ -522,22 +522,27 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-.score-card.maturity-foundation {
+.score-card.maturity-initial {
     background: linear-gradient(135deg, #c9190b 0%, #a30000 100%);
     border: 2px solid #c9190b;
 }
 
-.score-card.maturity-developing {
+.score-card.maturity-managed {
     background: linear-gradient(135deg, #ec7a08 0%, #c46100 100%);
     border: 2px solid #ec7a08;
 }
 
-.score-card.maturity-strategic {
-    background: linear-gradient(135deg, #f0ab00 0%, #c58c00 100%);
-    border: 2px solid #f0ab00;
+.score-card.maturity-defined {
+    background: linear-gradient(135deg, #ffc107 0%, #f0ab00 100%);
+    border: 2px solid #ffc107;
 }
 
-.score-card.maturity-advanced {
+.score-card.maturity-quantitative {
+    background: linear-gradient(135deg, #8bc34a 0%, #689f38 100%);
+    border: 2px solid #8bc34a;
+}
+
+.score-card.maturity-optimizing {
     background: linear-gradient(135deg, #2aaa04 0%, #1b7003 100%);
     border: 2px solid #2aaa04;
 }
@@ -587,19 +592,23 @@
 }
 
 /* Color the ring based on maturity level */
-.maturity-foundation .progress-ring-circle {
+.maturity-initial .progress-ring-circle {
     stroke: #e01000;
 }
 
-.maturity-developing .progress-ring-circle {
+.maturity-managed .progress-ring-circle {
     stroke: #ec7a08;
 }
 
-.maturity-strategic .progress-ring-circle {
-    stroke: #ffc425;
+.maturity-defined .progress-ring-circle {
+    stroke: #ffd54f;
 }
 
-.maturity-advanced .progress-ring-circle {
+.maturity-quantitative .progress-ring-circle {
+    stroke: #aed581;
+}
+
+.maturity-optimizing .progress-ring-circle {
     stroke: #3fcc00;
 }
 
@@ -778,22 +787,27 @@
     border-left: 4px solid;
 }
 
-.action-priority.maturity-foundation {
+.action-priority.maturity-initial {
     background: rgba(201, 25, 11, 0.1);
     border-color: #c9190b;
 }
 
-.action-priority.maturity-developing {
+.action-priority.maturity-managed {
     background: rgba(236, 122, 8, 0.1);
     border-color: #ec7a08;
 }
 
-.action-priority.maturity-strategic {
-    background: rgba(240, 171, 0, 0.1);
-    border-color: #f0ab00;
+.action-priority.maturity-defined {
+    background: rgba(255, 193, 7, 0.1);
+    border-color: #ffc107;
 }
 
-.action-priority.maturity-advanced {
+.action-priority.maturity-quantitative {
+    background: rgba(139, 195, 74, 0.1);
+    border-color: #8bc34a;
+}
+
+.action-priority.maturity-optimizing {
     background: rgba(42, 170, 4, 0.1);
     border-color: #2aaa04;
 }
