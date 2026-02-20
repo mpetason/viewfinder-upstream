@@ -2,16 +2,20 @@
 # Viewfinder Lite - Container Image
 # ==============================================================================
 # A streamlined Digital Sovereignty Readiness Assessment tool
-# Based on Red Hat Universal Base Image 9 with PHP 8.3
+# Based on the official PHP 8.3 + Apache Docker Hub image
 #
 # Features:
 # - 21 questions across 7 critical domains
 # - 4-level maturity assessment (Foundation, Developing, Strategic, Advanced)
 # - PDF report generation
 # - Progress auto-save
+#
+# Build: docker build -t viewfinder-lite:latest .
+# Run:   docker run -d -p 8080:80 --name viewfinder-lite viewfinder-lite:latest
+# Open:  http://localhost:8080
 # ==============================================================================
 
-FROM registry.access.redhat.com/ubi9/php-83:latest
+FROM php:8.3-apache
 
 # ------------------------------------------------------------------------------
 # Metadata
@@ -20,60 +24,50 @@ LABEL maintainer="Chris Jenkins <chrisj@redhat.com>" \
       name="viewfinder-lite" \
       version="1.0.0" \
       description="Viewfinder Lite - Digital Sovereignty Readiness Assessment" \
-      summary="Lightweight assessment tool for evaluating digital sovereignty posture across 7 domains" \
-      io.k8s.description="Digital Sovereignty Readiness Assessment tool with 7 domain coverage and 4-level maturity model" \
-      io.k8s.display-name="Viewfinder Lite" \
-      io.openshift.tags="assessment,digital-sovereignty,php,redhat"
+      summary="Lightweight assessment tool for evaluating digital sovereignty posture across 7 domains"
 
 # ------------------------------------------------------------------------------
-# Environment Setup
+# PHP Extensions & System Dependencies
 # ------------------------------------------------------------------------------
-ENV APP_ROOT=/opt/app-root/src \
-    PHP_VERSION=8.3 \
-    PATH=/opt/app-root/src/bin:/opt/app-root/bin:$PATH
-
-WORKDIR ${APP_ROOT}
-
-# ------------------------------------------------------------------------------
-# System Dependencies
-# ------------------------------------------------------------------------------
-USER root
-
-# Install required packages and clean up in single layer
-RUN dnf install -y \
-        httpd \
-        php-fpm \
-        php-json \
-        php-gd \
-        php-mbstring \
-    && dnf clean all \
-    && rm -rf /var/cache/dnf
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libzip-dev \
+        libonig-dev \
+        unzip \
+        curl \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd mbstring \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ------------------------------------------------------------------------------
-# Apache Security Configuration
+# Apache Configuration
 # ------------------------------------------------------------------------------
-RUN sed -i 's/^ServerTokens .*/ServerTokens Prod/' /etc/httpd/conf/httpd.conf && \
-    sed -i 's/^ServerSignature .*/ServerSignature Off/' /etc/httpd/conf/httpd.conf && \
-    echo 'Header always set X-Content-Type-Options "nosniff"' >> /etc/httpd/conf/httpd.conf && \
-    echo 'Header always set X-Frame-Options "SAMEORIGIN"' >> /etc/httpd/conf/httpd.conf && \
-    echo 'Header always set X-XSS-Protection "1; mode=block"' >> /etc/httpd/conf/httpd.conf && \
-    echo 'Header always set Referrer-Policy "strict-origin-when-cross-origin"' >> /etc/httpd/conf/httpd.conf
+# Enable required modules: mod_headers (security headers) + mod_rewrite (.htaccess)
+RUN a2enmod headers rewrite
+
+# Security headers and token suppression
+RUN echo 'ServerTokens Prod' >> /etc/apache2/apache2.conf \
+    && echo 'ServerSignature Off' >> /etc/apache2/apache2.conf \
+    && printf '<IfModule mod_headers.c>\n  Header always set X-Content-Type-Options "nosniff"\n  Header always set X-Frame-Options "SAMEORIGIN"\n  Header always set X-XSS-Protection "1; mode=block"\n  Header always set Referrer-Policy "strict-origin-when-cross-origin"\n</IfModule>\n' \
+       >> /etc/apache2/apache2.conf
 
 # ------------------------------------------------------------------------------
 # Composer Installation
 # ------------------------------------------------------------------------------
 RUN curl -sS https://getcomposer.org/installer | php -- \
-        --install-dir=/usr/local/bin \
-        --filename=composer && \
-    chmod +x /usr/local/bin/composer
+        --install-dir=/usr/local/bin --filename=composer \
+    && chmod +x /usr/local/bin/composer
 
 # ------------------------------------------------------------------------------
 # PHP Dependencies
 # ------------------------------------------------------------------------------
-# Copy composer files first for better Docker layer caching
-COPY --chown=1001:0 composer.json composer.lock* ./
+WORKDIR /var/www/html
 
-# Install dependencies with production optimizations
+# Copy composer files first for better Docker layer caching
+COPY composer.json composer.lock* ./
+
 RUN composer install \
         --no-dev \
         --no-interaction \
@@ -86,56 +80,26 @@ RUN composer install \
 # ------------------------------------------------------------------------------
 # Application Files
 # ------------------------------------------------------------------------------
-# Copy application code
-COPY --chown=1001:0 index.php ./
-COPY --chown=1001:0 includes/ ./includes/
-COPY --chown=1001:0 ds-qualifier/ ./ds-qualifier/
-COPY --chown=1001:0 error-pages/ ./error-pages/
-COPY --chown=1001:0 css/ ./css/
-COPY --chown=1001:0 js/ ./js/
-COPY --chown=1001:0 images/ ./images/
-COPY --chown=1001:0 README.md ./
+COPY index.php ./
+COPY includes/ ./includes/
+COPY ds-qualifier/ ./ds-qualifier/
+COPY error-pages/ ./error-pages/
+COPY css/ ./css/
+COPY images/ ./images/
+COPY README.md ./
 
 # ------------------------------------------------------------------------------
 # Directory Structure & Permissions
 # ------------------------------------------------------------------------------
-# Create required directories
-RUN mkdir -p ${APP_ROOT}/logs
-
-# Set ownership and permissions for OpenShift compatibility
-# Files: 644, Directories: 755, Group writable: logs
-RUN chown -R 1001:0 ${APP_ROOT} && \
-    chmod -R g=u ${APP_ROOT} && \
-    find ${APP_ROOT} -type d -exec chmod 755 {} \; && \
-    find ${APP_ROOT} -type f -exec chmod 644 {} \; && \
-    chmod 775 ${APP_ROOT}/logs
+RUN mkdir -p /var/www/html/logs && chmod 775 /var/www/html/logs
 
 # ------------------------------------------------------------------------------
 # Runtime Configuration
 # ------------------------------------------------------------------------------
-# Switch to non-root user for security
-USER 1001
+EXPOSE 80
 
 # Health check - verify application is responding
-HEALTHCHECK --interval=30s \
-            --timeout=5s \
-            --start-period=10s \
-            --retries=3 \
-    CMD curl -f http://localhost:8080/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
 
-# Expose application port
-EXPOSE 8080
-
-# ------------------------------------------------------------------------------
-# Container Startup
-# ------------------------------------------------------------------------------
-# Use PHP built-in development server
-# Note: For production, consider using Apache/Nginx + PHP-FPM
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "/opt/app-root/src"]
-
-# ==============================================================================
-# Build Instructions:
-# ------------------
-# Build: podman build -t viewfinder-lite:latest .
-# Run:   podman run -d -p 8080:8080 --name viewfinder-lite viewfinder-lite:latest
-# ==============================================================================
+# CMD inherited from php:8.3-apache: apache2-foreground

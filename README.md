@@ -48,123 +48,34 @@ This is an **upstream open source project** maintained by the Red Hat Community 
 ## Installation
 
 ### Prerequisites
-- PHP 8.1 or higher
-- Apache or Nginx web server
-- Composer (for dependency management)
+- [Docker](https://docs.docker.com/get-docker/) installed and running
 
-### Local Installation
+### Running with Docker
 
-1. **Clone or extract the application**:
+1. **Clone the repository**:
    ```bash
-   cd /var/www/html/viewfinder-lite
+   git clone https://github.com/redhat-cop/viewfinder-lite.git
+   cd viewfinder-lite
    ```
 
-2. **Install dependencies**:
+2. **Build the image**:
    ```bash
-   composer install --no-dev --optimize-autoloader
+   docker build -t viewfinder-lite:latest .
    ```
 
-3. **Set file permissions**:
+3. **Run the container**:
    ```bash
-   # Set ownership (adjust user/group for your system)
-   sudo chown -R apache:apache /var/www/html/viewfinder-lite
-
-   # Set directory permissions
-   sudo chmod 755 /var/www/html/viewfinder-lite
-   sudo chmod 775 /var/www/html/viewfinder-lite/logs
-
-   # Set file permissions
-   find /var/www/html/viewfinder-lite -type f -exec chmod 644 {} \;
+   docker run -d -p 8080:80 --name viewfinder-lite viewfinder-lite:latest
    ```
 
-4. **Configure web server**:
-   - See [Web Server Configuration](#web-server-configuration) below
-
-5. **Access the application**:
-   ```
-   http://your-server/viewfinder-lite
-   ```
-
-### Podman Installation
-
-1. **Build the container**:
-   ```bash
-   cd /var/www/html/viewfinder-lite
-   podman build -t viewfinder-lite:latest .
-   ```
-
-2. **Run the container**:
-   ```bash
-   podman run -d -p 8080:8080 --name viewfinder-lite viewfinder-lite:latest
-   ```
-
-3. **Access the application**:
+4. **Access the application**:
    ```
    http://localhost:8080
    ```
 
-## Web Server Configuration
-
-### Apache Configuration
-
-**VirtualHost Example** (`/etc/httpd/conf.d/viewfinder-lite.conf`):
-```apache
-<VirtualHost *:80>
-    ServerName viewfinder-lite.example.com
-    DocumentRoot /var/www/html/viewfinder-lite
-
-    <Directory /var/www/html/viewfinder-lite>
-        Options -Indexes +FollowSymLinks
-        AllowOverride All
-        Require all granted
-
-        # Security headers
-        Header always set X-Content-Type-Options "nosniff"
-        Header always set X-Frame-Options "SAMEORIGIN"
-        Header always set X-XSS-Protection "1; mode=block"
-    </Directory>
-
-    # Logging
-    ErrorLog /var/log/httpd/viewfinder-lite-error.log
-    CustomLog /var/log/httpd/viewfinder-lite-access.log combined
-</VirtualHost>
-```
-
-### Nginx Configuration
-
-**Server Block Example** (`/etc/nginx/conf.d/viewfinder-lite.conf`):
-```nginx
-server {
-    listen 80;
-    server_name viewfinder-lite.example.com;
-    root /var/www/html/viewfinder-lite;
-    index index.php;
-
-    # Security headers
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-
-    # Deny access to sensitive files
-    location ~ /\. {
-        deny all;
-    }
-
-    # Logging
-    access_log /var/log/nginx/viewfinder-lite-access.log;
-    error_log /var/log/nginx/viewfinder-lite-error.log;
-}
+To stop the container:
+```bash
+docker stop viewfinder-lite
 ```
 
 ## File Structure
@@ -321,51 +232,33 @@ Edit `ds-qualifier/config.php` to customize:
 
 ### Common Issues
 
-**Issue**: Permission denied errors
+**Issue**: Container fails to start
 ```bash
-# Solution: Set correct ownership and permissions
-sudo chown -R apache:apache /var/www/html/viewfinder-lite
-sudo chmod 755 /var/www/html/viewfinder-lite
-sudo chmod 775 /var/www/html/viewfinder-lite/logs
+# Check logs for errors
+docker logs viewfinder-lite
 ```
 
-**Issue**: Composer dependencies not found
+**Issue**: Port 8080 already in use
 ```bash
-# Solution: Run composer install
-cd /var/www/html/viewfinder-lite
-composer install --no-dev --optimize-autoloader
+# Use a different host port
+docker run -d -p 8081:80 --name viewfinder-lite viewfinder-lite:latest
 ```
 
-**Issue**: PDF generation fails
+**Issue**: Rebuild after code changes
 ```bash
-# Solution: Check dompdf is installed
-composer show dompdf/dompdf
-# If not found, reinstall dependencies
-composer install --no-dev --optimize-autoloader
-```
-
-**Issue**: Sessions not persisting
-```bash
-# Solution: Check session directory permissions
-sudo chmod 1733 /var/lib/php/session  # For RHEL/CentOS
-sudo chmod 1733 /var/lib/php/sessions # For Debian/Ubuntu
+docker build --no-cache -t viewfinder-lite:latest .
+docker rm -f viewfinder-lite
+docker run -d -p 8080:80 --name viewfinder-lite viewfinder-lite:latest
 ```
 
 ### Logging
 
-View application logs for troubleshooting:
-
 ```bash
-# View recent logs
-tail -f /var/www/html/viewfinder-lite/logs/app.log
+# Stream live logs
+docker logs -f viewfinder-lite
 
 # Search for errors
-grep ERROR /var/www/html/viewfinder-lite/logs/app.log
-
-# View web server logs
-tail -f /var/log/httpd/error_log    # Apache (RHEL/CentOS)
-tail -f /var/log/apache2/error.log  # Apache (Debian/Ubuntu)
-tail -f /var/log/nginx/error.log    # Nginx
+docker logs viewfinder-lite 2>&1 | grep ERROR
 ```
 
 ## Development
