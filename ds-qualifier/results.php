@@ -1,3 +1,10 @@
+<?php
+// Start session to store results for PDF generation
+session_start();
+
+// Store POST data in session for PDF generator
+$_SESSION['assessment_data'] = $_POST;
+?>
 <!doctype html>
 <html lang="en-us" class="pf-theme-dark">
 <head>
@@ -52,12 +59,6 @@
 
   <div class="container">
     <?php
-    // Start session to store results for PDF generation
-    session_start();
-
-    // Store POST data in session for PDF generator
-    $_SESSION['assessment_data'] = $_POST;
-
     // Load questions configuration for domain mapping
     $questions = require_once 'config.php';
 
